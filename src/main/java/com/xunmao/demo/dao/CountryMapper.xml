@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xunmao.demo.dao.CountryMapper">
+
+  <!-- 
+    https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#结果映射
+    （xunmao） Country 类和 City 类的属性名与所对应的列名一致，可以进行自动映射（故在此省略）。
+    （xunmao）更新了 City 类之后，上面的自动映射居然失效了，不知道为什么。
+   -->
+  <resultMap id="countryMap" type="com.xunmao.demo.pojo.Country">
+    <id property="countryId" column="country_id" />
+    <collection property="cities" javaType="list" ofType="com.xunmao.demo.pojo.City">
+      <id property="cityId" column="city_id" />
+      <result property="lastUpdate" column="city_last_update" />
+    </collection>
+  </resultMap>
+  <select id="findCountryById" resultMap="countryMap">
+    SELECT
+        country.country_id,
+        country.country,
+        country.last_update,
+        city.city_id,
+        city.city,
+        city.last_update AS city_last_update
+    FROM
+        country
+        LEFT OUTER JOIN city ON city.country_id = country.country_id
+    WHERE
+        country.country_id = #{countryId};
+  </select>
+
+</mapper>

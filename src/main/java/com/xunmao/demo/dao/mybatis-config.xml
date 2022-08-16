@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+  <!-- 在 MyBatis 核心配置文件中出现的属性值保存在这里 -->
+  <properties resource="mybatis.properties" />
+
+  <settings>
+    <!-- 是否开启驼峰命名自动映射，即从经典数据库列名 A_COLUMN 映射到经典 Java 属性名 aColumn。 -->
+    <setting name="mapUnderscoreToCamelCase" value="true" />
+    <!-- 指定 MyBatis 所用日志的具体实现，未指定时将自动查找。可以从以下实现中选择一个：
+      SLF4J | LOG4J（3.5.9 起废弃） | LOG4J2 | JDK_LOGGING | COMMONS_LOGGING | STDOUT_LOGGING | NO_LOGGING
+      （xunmao） STDOUT_LOGGING 不需要导入依赖，可以直接使用。
+     -->
+    <setting name="logImpl" value="STDOUT_LOGGING" />
+  </settings>
+
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC" />
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}" />
+        <property name="url" value="${url}" />
+        <property name="username" value="${username}" />
+        <property name="password" value="${password}" />
+      </dataSource>
+    </environment>
+  </environments>
+
+  <mappers>
+    <mapper resource="com/xunmao/demo/dao/ActorMapper.xml" />
+    <mapper resource="com/xunmao/demo/dao/AddressMapper.xml" />
+    <mapper resource="com/xunmao/demo/dao/CityMapper.xml" />
+    <mapper resource="com/xunmao/demo/dao/CountryMapper.xml" />
+  </mappers>
+
+</configuration>
