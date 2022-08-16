@@ -1,13 +1,20 @@
 package com.xunmao.demo;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 /**
- * Hello world!
- *
+ * Unit test for simple App.
  */
-public class App 
+public class AppTest 
 {
-    public static void main( String[] args )
+    /**
+     * Rigorous Test :-)
+     */
+    @Test
+    public void shouldAnswerWithTrue()
     {
-        System.out.println( "Hello World!" );
+        assertTrue( true );
     }
 }

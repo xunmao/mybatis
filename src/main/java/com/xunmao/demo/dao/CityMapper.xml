@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xunmao.demo.dao.CityMapper">
+
+  <!-- 
+    （xunmao）这里省略了参数类型 map。
+    参数 map 中包含两个元素，它们的 key 分别是： startIndex 和 pageSize。
+    XML 文件通过上述 key 可以取到相应的值。
+   -->
+  <select id="listCitiesWithLimit" resultType="com.xunmao.demo.pojo.City">
+    SELECT
+        city_id,
+        city,
+        country_id,
+        last_update
+    FROM
+        city
+    LIMIT
+        #{startIndex}, #{pageSize}
+  </select>
+
+  <!-- 
+    https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#结果映射
+    （xunmao） City 类和 Address 类的属性名与所对应的列名一致，理论上可以进行自动映射，实际上却失效了。
+   -->
+  <resultMap id="cityMap" type="com.xunmao.demo.pojo.City">
+    <id property="cityId" column="city_id" />
+    <result property="city" column="city" />
+    <result property="countryId" column="country_id" />
+    <result property="lastUpdate" column="last_update" />
+    <association property="address" javaType="com.xunmao.demo.pojo.Address">
+      <id property="addressId" column="address_id" />
+      <result property="addressId" column="address_id" />
+      <result property="address" column="address" />
+      <result property="address2" column="address2" />
+      <result property="district" column="district" />
+      <result property="cityId" column="address_city_id" />
+      <result property="postalCode" column="postal_code" />
+      <result property="lastUpdate" column="address_last_update" />
+    </association>
+  </resultMap>
+  <select id="findCityById" resultMap="cityMap">
+    SELECT
+        city.city_id,
+        city.city,
+        city.country_id,
+        city.last_update,
+        address.address_id,
+        address.address,
+        address.address2,
+        address.district,
+        address.city_id AS address_city_id,
+        address.postal_code,
+        address.last_update AS address_last_update
+    FROM
+        city
+        LEFT OUTER JOIN address ON city.city_id = address.city_id
+    WHERE
+        city.city_id = #{cityId}
+  </select>
+
+</mapper>

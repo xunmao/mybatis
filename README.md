@@ -98,15 +98,69 @@ public List<Actor> listActorsByLastNameLike(String value);
 
 ## 优化核心配置
 
-### 类型别名
-
 ### 开启日志
+
+```xml
+<!-- 指定 MyBatis 所用日志的具体实现，未指定时将自动查找。可以从以下实现中选择一个：
+  SLF4J | LOG4J（3.5.9 起废弃） | LOG4J2 | JDK_LOGGING | COMMONS_LOGGING | STDOUT_LOGGING | NO_LOGGING
+  （xunmao） STDOUT_LOGGING 不需要导入依赖，可以直接使用。
+ -->
+<setting name="logImpl" value="STDOUT_LOGGING" />
+```
+
+### 类型别名
 
 ## 高级映射
 
-### 多对一查询
+TODO
+1. 理论上可以进行自动映射，实际上却失效了
 
-### 一对多查询
+### 一对一查询（ association ）
+
+一个城市（City类）有一个地址（Address类）。
+
+```xml
+<!-- 
+  https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#结果映射
+  （xunmao） City 类和 Address 类的属性名与所对应的列名一致，理论上可以进行自动映射，实际上却失效了。
+ -->
+<resultMap id="cityMap" type="com.xunmao.demo.pojo.City">
+  <id property="cityId" column="city_id" />
+  <result property="city" column="city" />
+  <result property="countryId" column="country_id" />
+  <result property="lastUpdate" column="last_update" />
+  <association property="address" javaType="com.xunmao.demo.pojo.Address">
+    <id property="addressId" column="address_id" />
+    <result property="addressId" column="address_id" />
+    <result property="address" column="address" />
+    <result property="address2" column="address2" />
+    <result property="district" column="district" />
+    <result property="cityId" column="address_city_id" />
+    <result property="postalCode" column="postal_code" />
+    <result property="lastUpdate" column="address_last_update" />
+  </association>
+</resultMap>
+```
+
+### 一对多查询（ collection ）
+
+一个国家（Country类）包含多个城市（City类）。
+
+```xml
+<!-- 
+  https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#结果映射
+  （xunmao） Country 类和 City 类的属性名与所对应的列名一致，可以进行自动映射（故在此省略）。
+  （xunmao）更新了 City 类之后，上面的自动映射居然失效了，不知道为什么。
+ -->
+<resultMap id="countryMap" type="com.xunmao.demo.pojo.Country">
+  <id property="countryId" column="country_id" />
+  <result property="lastUpdate" column="country_last_update" />
+  <collection property="cities" javaType="list" ofType="com.xunmao.demo.pojo.City">
+    <id property="cityId" column="city_id" />
+    <result property="lastUpdate" column="city_last_update" />
+  </collection>
+</resultMap>
+```
 
 ## 动态SQL
 
