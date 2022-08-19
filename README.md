@@ -115,6 +115,44 @@ public List<Actor> listActorsByLastNameLike(String value);
 TODO
 1. 理论上可以进行自动映射，实际上却失效了
 
+直接将结果集映射到Map上，输出的结果如下（手动格式化）：
+```
+{
+  city_id=1
+  city=A Corua (La Corua), 
+  country_id=87, 
+  last_update=2006-02-15 04:45:25.0, 
+  address_id=56, 
+  address=939 Probolinggo Loop, 
+  address2=, 
+  district=Galicia, 
+  address_city_id=1, 
+  postal_code=4166, 
+  address_last_update=2014-09-25 22:33:08.0, 
+}
+```
+Map的Key跟结果集中的列名一致，符合预期。
+
+省略ResultMap中跟City类相关的字段，输出结果如下（手动格式化）：
+```
+City [
+  address=Address [
+    address=939 Probolinggo Loop, 
+    address2=, 
+    addressId=56, 
+    cityId=1, 
+    district=Galicia, 
+    lastUpdate=Thu Sep 25 22:33:08 CST 2014, 
+    postalCode=4166
+  ], 
+  city=null, 
+  cityId=0, 
+  countryId=null, 
+  lastUpdate=null
+]
+```
+City类中被省略的字段均为初始值，说明自动映射失效。
+
 ### 一对一查询（ association ）
 
 一个城市（City类）有一个地址（Address类）。
