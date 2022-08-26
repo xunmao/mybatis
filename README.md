@@ -112,8 +112,55 @@ public List<Actor> listActorsByLastNameLike(String value);
 
 ## 高级映射
 
-TODO
-1. 理论上可以进行自动映射，实际上却失效了
+### 一对一查询（ association ）
+
+一个城市（City类）有一个地址（Address类）。
+
+```xml
+<!-- 
+  https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#结果映射
+ -->
+<resultMap id="cityMap" type="com.xunmao.demo.pojo.City">
+  <id property="cityId" column="city_id" />
+  <result property="city" column="city" />
+  <result property="countryId" column="country_id" />
+  <result property="lastUpdate" column="last_update" />
+  <association property="address" javaType="com.xunmao.demo.pojo.Address">
+    <id property="addressId" column="address_id" />
+    <result property="addressId" column="address_id" />
+    <result property="address" column="address" />
+    <result property="address2" column="address2" />
+    <result property="district" column="district" />
+    <result property="cityId" column="address_city_id" />
+    <result property="postalCode" column="postal_code" />
+    <result property="lastUpdate" column="address_last_update" />
+  </association>
+</resultMap>
+```
+
+### 一对多查询（ collection ）
+
+一个国家（Country类）包含多个城市（City类）。
+
+```xml
+<!-- 
+  https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#结果映射
+ -->
+<resultMap id="countryMap" type="com.xunmao.demo.pojo.Country">
+  <id property="countryId" column="country_id" />
+  <result property="lastUpdate" column="country_last_update" />
+  <collection property="cities" javaType="list" ofType="com.xunmao.demo.pojo.City">
+    <id property="cityId" column="city_id" />
+    <result property="lastUpdate" column="city_last_update" />
+  </collection>
+</resultMap>
+```
+
+### 自动映射
+
+在使用上述映射时，有个疑问，就是自动映射不知为何失效了。
+1.  City 类和 Address 类的属性名与所对应的列名一致，理论上可以进行自动映射，实际上却失效了。
+2.  Country 类和 City 类的属性名与所对应的列名一致，可以进行自动映射（故在此省略）。更新了 City 类之后，自动映射居然失效了，不知道为什么。
 
 直接将结果集映射到Map上，输出的结果如下（手动格式化）：
 ```
@@ -153,51 +200,22 @@ City [
 ```
 City类中被省略的字段均为初始值，说明自动映射失效。
 
-### 一对一查询（ association ）
+根据官方文档的解释，这种现象是符合预期的。
 
-一个城市（City类）有一个地址（Address类）。
-
-```xml
-<!-- 
-  https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#结果映射
-  （xunmao） City 类和 Address 类的属性名与所对应的列名一致，理论上可以进行自动映射，实际上却失效了。
- -->
-<resultMap id="cityMap" type="com.xunmao.demo.pojo.City">
-  <id property="cityId" column="city_id" />
-  <result property="city" column="city" />
-  <result property="countryId" column="country_id" />
-  <result property="lastUpdate" column="last_update" />
-  <association property="address" javaType="com.xunmao.demo.pojo.Address">
-    <id property="addressId" column="address_id" />
-    <result property="addressId" column="address_id" />
-    <result property="address" column="address" />
-    <result property="address2" column="address2" />
-    <result property="district" column="district" />
-    <result property="cityId" column="address_city_id" />
-    <result property="postalCode" column="postal_code" />
-    <result property="lastUpdate" column="address_last_update" />
-  </association>
-</resultMap>
-```
-
-### 一对多查询（ collection ）
-
-一个国家（Country类）包含多个城市（City类）。
+> 有三种自动映射等级：
+> 
+> `NONE` - 禁用自动映射。仅对手动映射的属性进行映射。  
+> `PARTIAL` - 对除在内部定义了嵌套结果映射（也就是连接的属性）以外的属性进行映射。  
+> `FULL` - 自动映射所有属性。  
+> 默认值是 `PARTIAL`，这是有原因的。当对连接查询的结果使用 `FULL` 时，连接查询会在同一行中获取多个不同实体的数据，因此可能导致非预期的映射。
 
 ```xml
-<!-- 
-  https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#结果映射
-  （xunmao） Country 类和 City 类的属性名与所对应的列名一致，可以进行自动映射（故在此省略）。
-  （xunmao）更新了 City 类之后，上面的自动映射居然失效了，不知道为什么。
+<!-- 指定 MyBatis 应如何自动映射列到字段或属性。
+   NONE 表示关闭自动映射。
+   PARTIAL 只会自动映射没有定义嵌套结果映射的字段。
+   FULL 会自动映射任何复杂的结果集（无论是否嵌套）。
  -->
-<resultMap id="countryMap" type="com.xunmao.demo.pojo.Country">
-  <id property="countryId" column="country_id" />
-  <result property="lastUpdate" column="country_last_update" />
-  <collection property="cities" javaType="list" ofType="com.xunmao.demo.pojo.City">
-    <id property="cityId" column="city_id" />
-    <result property="lastUpdate" column="city_last_update" />
-  </collection>
-</resultMap>
+<setting name="autoMappingBehavior" value="PARTIAL"/>
 ```
 
 ## 动态SQL
