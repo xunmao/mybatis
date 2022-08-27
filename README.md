@@ -226,3 +226,13 @@ City类中被省略的字段均为初始值，说明自动映射失效。
 ```java
 public void updateActorWithMap(Map<String, Object> parameterMap);
 ```
+
+### 动态查询
+
+新增动态查询功能，可以根据指定的条件进行查询，并且，当指定条件为空时，不使用该条件。
+```java
+// 根据根据输入的演员姓名，生成动态SQL查询
+// 可以输入 first_name 或者 last_name 或者两者
+// TODO 传入空 Map 时，返回 listActorsWithLimit 方法的默认结果
+public List<Actor> listActorsLike(Map<String, String> parameterMap);
+```

@@ -13,6 +13,8 @@ public interface ActorMapper {
 
     public List<Actor> listActorsByLastNameLike(String value);
 
+    public List<Actor> listActorsLike(Map<String, String> parameterMap);
+
     public Actor findActorById(int actorId);
 
     public void addActor(Actor actor);
