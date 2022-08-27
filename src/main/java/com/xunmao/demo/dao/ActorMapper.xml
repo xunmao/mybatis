@@ -50,6 +50,27 @@
         last_name LIKE #{value}
   </select>
 
+  <select id="listActorsLike" resultType="com.xunmao.demo.pojo.Actor">
+    SELECT
+        actor_id,
+        first_name,
+        last_name,
+        last_update
+    FROM
+        actor
+    <where>
+      <if test="firstName != null">
+        first_name LIKE #{firstName}
+      </if>
+      <if test="lastName != null">
+        AND last_name LIKE #{lastName}
+      </if>
+    </where>
+    <if test="firstName == null and lastName == null">
+      LIMIT 0, 5
+    </if>
+  </select>
+
   <!-- 
     parameterType 将会传入这条语句的参数的类全限定名或别名。
     这个属性是可选的，因为 MyBatis 可以通过类型处理器（TypeHandler）推断出具体传入语句的参数，默认值为未设置（unset）。

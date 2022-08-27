@@ -61,6 +61,24 @@ public class ActorMapperTest {
     }
 
     @Test
+    public void shouldListActorsLike() {
+        try (SqlSession sqlSession = new MyBatisUtil().getSqlSession()) {
+            ActorMapper actorMapper = sqlSession.getMapper(com.xunmao.demo.dao.ActorMapper.class);
+
+            Map<String, String> parameterMap = new HashMap<>();
+            parameterMap.put("firstName", "%TT%");
+            parameterMap.put("lastName", "%NI%");
+            // 切记：不要遗漏通配符 %%
+            List<Actor> actors = actorMapper.listActorsLike(parameterMap);
+            for (Actor actor : actors) {
+                System.out.println(actor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void shouldFindActorById() {
         try (SqlSession sqlSession = new MyBatisUtil().getSqlSession()) {
             ActorMapper actorMapper = sqlSession.getMapper(com.xunmao.demo.dao.ActorMapper.class);
