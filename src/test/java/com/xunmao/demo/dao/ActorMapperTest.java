@@ -105,6 +105,23 @@ public class ActorMapperTest {
     }
 
     @Test
+    public void shouldUpdateActorWithMap() {
+        try (SqlSession sqlSession = new MyBatisUtil().getSqlSession()) {
+            ActorMapper actorMapper = sqlSession.getMapper(com.xunmao.demo.dao.ActorMapper.class);
+
+            Map<String, Object> parameterMap = new HashMap<>();
+            parameterMap.put("actorId", 9999);
+            parameterMap.put("firstName", "newfirstName");
+            parameterMap.put("lastName", null);
+            actorMapper.updateActorWithMap(parameterMap);
+
+            sqlSession.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void shouldDeleteActor() {
         try (SqlSession sqlSession = new MyBatisUtil().getSqlSession()) {
             ActorMapper actorMapper = sqlSession.getMapper(com.xunmao.demo.dao.ActorMapper.class);

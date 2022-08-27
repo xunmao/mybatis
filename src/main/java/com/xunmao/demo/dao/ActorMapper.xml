@@ -94,8 +94,11 @@
   <update id="updateActorWithMap" parameterType="com.xunmao.demo.pojo.Actor">
     UPDATE
         actor
-    SET
-        first_name = #{firstName}, last_name = #{lastName}, last_update = #{lastUpdate}
+    <set>
+      <if test="firstName != null">first_name = #{firstName},</if>
+      <if test="lastName != null">last_name = #{lastName},</if>
+      <if test="lastUpdate != null"> last_update = #{lastUpdate}</if>
+    </set>
     WHERE
         actor_id = #{actorId}
   </update>
