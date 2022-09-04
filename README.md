@@ -1,13 +1,22 @@
 # mybatis
 
-此项目用于学习和尝试MyBatis( https://mybatis.org/mybatis-3/zh/index.html )框架的各种功能。
+此项目用于学习和尝试 MyBatis ( https://mybatis.org/mybatis-3/zh/index.html )框架的各种功能。
 
 ## 搭建环境
 
-1. 在本地环境安装MySQL数据库。
-2. 导入Sakila示例数据库。（ https://dev.mysql.com/doc/sakila/en/ ）
+1. 在本地环境安装 MySQL 数据库。
+2. 导入 Sakila 示例数据库。( https://dev.mysql.com/doc/sakila/en/ )
 
 ## 准备工作
+
+### 创建 Maven 项目
+
+使用以下命令创建 Maven 项目。参考：  
+https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
+
+```sh
+mvn archetype:generate -DgroupId=com.xunmao.demo -DartifactId=mybatis -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+```
 
 ### 导入依赖
 
@@ -31,13 +40,46 @@
 </dependency>
 ```
 
-### 配置MyBatis
+### 目录结构
 
-此项目采用MyBatis官方推荐的目录结构。
+此项目采用 MyBatis 官方推荐的目录结构。
 
-## 第一个Mapper
+```
+/my_application
+  /bin
+  /devlib
+  /lib                <-- MyBatis *.jar 文件在这里。
+  /src
+    /org/myapp/
+      /action
+      /data           <-- MyBatis 配置文件在这里，包括映射器类、XML 配置、XML 映射文件。
+        /mybatis-config.xml
+        /BlogMapper.java
+        /BlogMapper.xml
+      /model
+      /service
+      /view
+    /properties       <-- 在 XML 配置中出现的属性值在这里。
+  /test
+    /org/myapp/
+      /action
+      /data
+      /model
+      /service
+      /view
+    /properties
+  /web
+    /WEB-INF
+      /web.xml
+```
 
-### 创建MyBatis工具类
+### 配置 MyBatis
+
+TODO
+
+## 第一个映射器（Mapper）
+
+### 创建 MyBatis 工具类
 
 TODO
 1. 什么是单例模式？
@@ -45,20 +87,22 @@ TODO
 
 https://mybatis.org/mybatis-3/zh/getting-started.html#作用域（scope）和生命周期
 
-### 创建Actor类（POJO）
+### 创建 Actor 类（POJO）
 
-1. 根据actor表，创建Actor类（POJO）。
-2. 更改MyBatis核心配置文件。
+1. 根据 actor 表，创建 Actor 类（POJO）。
+2. 更改 MyBatis 核心配置文件。
+
 ```xml
 <!-- 是否开启驼峰命名自动映射，即从经典数据库列名 A_COLUMN 映射到经典 Java 属性名 aColumn。 -->
 <setting name="mapUnderscoreToCamelCase" value="true" />
 ```
 
-### 创建ActorMapper类
+### 创建 ActorMapper 类（映射器）
 
 **切记：将Mapper文件添加到MyBatis核心配置文件中。**
 
-在Mapper添加基本的CRUD方法：
+在 Mapper 添加基本的 CRUD 方法：
+
 ```java
 public List<Actor> listActors();
 public Actor findActorById(int actorId);
@@ -67,31 +111,37 @@ public void updateActor(Actor actor);
 public void deleteActor(int actorId);
 ```
 
-只要创建好第一个方法，保证MyBatis核心配置文件正确且MyBatis工具类可以工作，  
+只要创建好第一个方法，保证 MyBatis 核心配置文件正确且 MyBatis 工具类可以工作，  
 后续再添加其他方法时，仅仅修改以下3个文件即可：
+
 1. ActorMapper.java
 2. ActorMapper.xml
 3. ActorMapperTest.java
 
 ### 创建测试类
 
-## 扩展ActorMapper
+TODO
+
+## 扩展 ActorMapper 类（映射器）
 
 ### 分页查询
 
-以下方法默认返回所有的Actor记录，共计200条。
+以下方法默认返回所有的 Actor 记录，共计200条。
+
 ```java
 public List<Actor> listActors();
 ```
 
 现在需要添加分页功能，避免返回过多数据，造成资源浪费。
+
 ```java
 public List<Actor> listActorsWithLimit(Map<String, Integer> parameterMap);
 ```
 
 ### 模糊查询
 
-现在需要添加模糊查询功能，根据Actor的last_name进行模糊查询。
+现在需要添加模糊查询功能，根据 Actor 的 last_name 进行模糊查询。
+
 ```java
 public List<Actor> listActorsByLastNameLike(String value);
 ```
@@ -110,11 +160,13 @@ public List<Actor> listActorsByLastNameLike(String value);
 
 ### 类型别名
 
+TODO
+
 ## 高级映射
 
 ### 一对一查询（ association ）
 
-一个城市（City类）有一个地址（Address类）。
+一个城市（ City 类）有一个地址（ Address 类）。
 
 ```xml
 <!-- 
@@ -140,7 +192,7 @@ public List<Actor> listActorsByLastNameLike(String value);
 
 ### 一对多查询（ collection ）
 
-一个国家（Country类）包含多个城市（City类）。
+一个国家（ Country 类）包含多个城市（ City 类）。
 
 ```xml
 <!-- 
@@ -162,7 +214,7 @@ public List<Actor> listActorsByLastNameLike(String value);
 1.  City 类和 Address 类的属性名与所对应的列名一致，理论上可以进行自动映射，实际上却失效了。
 2.  Country 类和 City 类的属性名与所对应的列名一致，可以进行自动映射（故在此省略）。更新了 City 类之后，自动映射居然失效了，不知道为什么。
 
-直接将结果集映射到Map上，输出的结果如下（手动格式化）：
+直接将结果集映射到 Map 上，输出的结果如下（手动格式化）：
 ```
 {
   city_id=1
@@ -178,9 +230,9 @@ public List<Actor> listActorsByLastNameLike(String value);
   address_last_update=2014-09-25 22:33:08.0, 
 }
 ```
-Map的Key跟结果集中的列名一致，符合预期。
+Map 的 Key 跟结果集中的列名一致，符合预期。
 
-省略ResultMap中跟City类相关的字段，输出结果如下（手动格式化）：
+省略 ResultMap 中跟 City 类相关的字段，输出结果如下（手动格式化）：
 ```
 City [
   address=Address [
@@ -198,7 +250,7 @@ City [
   lastUpdate=null
 ]
 ```
-City类中被省略的字段均为初始值，说明自动映射失效。
+City 类中被省略的字段均为初始值，说明自动映射失效。
 
 根据官方文档的解释，这种现象是符合预期的。
 
@@ -218,11 +270,12 @@ City类中被省略的字段均为初始值，说明自动映射失效。
 <setting name="autoMappingBehavior" value="PARTIAL"/>
 ```
 
-## 动态SQL
+## 动态 SQL
 
 ### 部分更新
 
-现在需要添加部分更新功能，只更新actor表的指定的一部分字段。
+现在需要添加部分更新功能，只更新 actor 表的指定的一部分字段。
+
 ```java
 public void updateActorWithMap(Map<String, Object> parameterMap);
 ```
@@ -230,9 +283,20 @@ public void updateActorWithMap(Map<String, Object> parameterMap);
 ### 动态查询
 
 新增动态查询功能，可以根据指定的条件进行查询，并且，当指定条件为空时，不使用该条件。
+
 ```java
 // 根据根据输入的演员姓名，生成动态SQL查询
 // 可以输入 first_name 或者 last_name 或者两者
 // TODO 传入空 Map 时，返回 listActorsWithLimit 方法的默认结果
 public List<Actor> listActorsLike(Map<String, String> parameterMap);
 ```
+
+## 缓存
+
+### 一级缓存
+
+TODO
+
+### 二级缓存
+
+TODO
