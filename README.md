@@ -1,6 +1,6 @@
 # mybatis
 
-此项目用于学习和尝试 MyBatis ( https://mybatis.org/mybatis-3/zh/index.html )框架的各种功能。
+此项目用于学习和尝试 MyBatis ( https://mybatis.org/mybatis-3/zh/index.html ) 框架的各种功能。
 
 ## 搭建环境
 
