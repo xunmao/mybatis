@@ -7,7 +7,7 @@
     参数 map 中包含两个元素，它们的 key 分别是： startIndex 和 pageSize。
     XML 文件通过上述 key 可以取到相应的值。
    -->
-  <select id="listCitiesWithLimit" resultType="com.xunmao.demo.pojo.City">
+  <select id="listCitiesWithLimit" resultType="City">
     SELECT
         city_id,
         city,
@@ -23,12 +23,12 @@
     https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#结果映射
     （xunmao） City 类和 Address 类的属性名与所对应的列名一致，理论上可以进行自动映射，实际上却失效了。
    -->
-  <resultMap id="cityMap" type="com.xunmao.demo.pojo.City">
+  <resultMap id="cityMap" type="City">
     <id property="cityId" column="city_id" />
     <result property="city" column="city" />
     <result property="countryId" column="country_id" />
     <result property="lastUpdate" column="last_update" />
-    <association property="address" javaType="com.xunmao.demo.pojo.Address">
+    <association property="address" javaType="Address">
       <id property="addressId" column="address_id" />
       <result property="addressId" column="address_id" />
       <result property="address" column="address" />

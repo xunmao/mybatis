@@ -13,7 +13,7 @@ import com.xunmao.demo.util.MyBatisUtil;
 public class CityMapperTest {
 
     @Test
-    public void shouldListActorsWithLimit() {
+    public void shouldListCitiesWithLimit() {
         try (SqlSession sqlSession = new MyBatisUtil().getSqlSession()) {
             CityMapper cityMapper = sqlSession.getMapper(com.xunmao.demo.dao.CityMapper.class);
 

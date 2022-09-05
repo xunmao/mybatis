@@ -7,7 +7,7 @@
     参数 map 中包含两个元素，它们的 key 分别是： startIndex 和 pageSize。
     XML 文件通过上述 key 可以取到相应的值。
    -->
-  <select id="findAddressById" resultType="com.xunmao.demo.pojo.Address">
+  <select id="findAddressById" resultType="Address">
     SELECT
         address_id,
         address,

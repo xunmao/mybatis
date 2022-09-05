@@ -11,7 +11,7 @@
     注意，如果返回的是集合，那应该设置为集合包含的类型，而不是集合本身的类型。
     resultType 和 resultMap 之间只能同时使用一个。
    -->
-  <select id="listActors" resultType="com.xunmao.demo.pojo.Actor">
+  <select id="listActors" resultType="Actor">
     SELECT
         actor_id,
         first_name,
@@ -26,7 +26,7 @@
     参数 map 中包含两个元素，它们的 key 分别是： startIndex 和 pageSize。
     XML 文件通过上述 key 可以取到相应的值。
    -->
-  <select id="listActorsWithLimit" resultType="com.xunmao.demo.pojo.Actor">
+  <select id="listActorsWithLimit" resultType="Actor">
     SELECT
         actor_id,
         first_name,
@@ -38,7 +38,7 @@
         #{startIndex}, #{pageSize}
   </select>
 
-  <select id="listActorsByLastNameLike" resultType="com.xunmao.demo.pojo.Actor">
+  <select id="listActorsByLastNameLike" resultType="Actor">
     SELECT
         actor_id,
         first_name,
@@ -50,7 +50,7 @@
         last_name LIKE #{value}
   </select>
 
-  <select id="listActorsLike" resultType="com.xunmao.demo.pojo.Actor">
+  <select id="listActorsLike" resultType="Actor">
     SELECT
         actor_id,
         first_name,
@@ -82,7 +82,7 @@
     比如 ORDER BY 子句，这时候你可以 ORDER BY #{columnName} 。这样，MyBatis 就不会修改或转义该字符串了。
     https://mybatis.org/mybatis-3/zh/sqlmap-xml.html#字符串替换
    -->
-  <select id="findActorById" resultType="com.xunmao.demo.pojo.Actor">
+  <select id="findActorById" resultType="Actor">
     SELECT
         actor_id,
         first_name,
@@ -94,7 +94,7 @@
         actor_id = #{actorId}
   </select>
 
-  <insert id="addActor" parameterType="com.xunmao.demo.pojo.Actor">
+  <insert id="addActor" parameterType="Actor">
     INSERT INTO
         actor (actor_id, first_name, last_name, last_update)
     VALUES
@@ -103,7 +103,7 @@
         )
   </insert>
 
-  <update id="updateActor" parameterType="com.xunmao.demo.pojo.Actor">
+  <update id="updateActor" parameterType="Actor">
     UPDATE
         actor
     SET
@@ -112,7 +112,7 @@
         actor_id = #{actorId}
   </update>
 
-  <update id="updateActorWithMap" parameterType="com.xunmao.demo.pojo.Actor">
+  <update id="updateActorWithMap" parameterType="Actor">
     UPDATE
         actor
     <set>

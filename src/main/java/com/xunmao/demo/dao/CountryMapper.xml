@@ -7,10 +7,13 @@
     （xunmao） Country 类和 City 类的属性名与所对应的列名一致，可以进行自动映射（故在此省略）。
     （xunmao）更新了 City 类之后，上面的自动映射居然失效了，不知道为什么。
    -->
-  <resultMap id="countryMap" type="com.xunmao.demo.pojo.Country">
+  <resultMap id="countryMap" type="Country">
     <id property="countryId" column="country_id" />
-    <collection property="cities" javaType="list" ofType="com.xunmao.demo.pojo.City">
+    <result property="country" column="country" />
+    <result property="lastUpdate" column="last_update" />
+    <collection property="cities" javaType="list" ofType="City">
       <id property="cityId" column="city_id" />
+      <result property="city" column="city" />
       <result property="lastUpdate" column="city_last_update" />
     </collection>
   </resultMap>
