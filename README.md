@@ -75,7 +75,39 @@ mvn archetype:generate -DgroupId=com.xunmao.demo -DartifactId=mybatis -Darchetyp
 
 ### 配置 MyBatis
 
-TODO
+根据官方文档创建 `mybatis-config.xml` 文件，以下称为核心配置文件。  
+https://mybatis.org/mybatis-3/zh/getting-started.html#从-xml-中构建-sqlsessionfactory
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+  <!-- 在 MyBatis 核心配置文件中出现的属性值保存在这里 -->
+  <properties resource="mybatis.properties" />
+
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+
+  <mappers>
+    <!-- 
+      项目中实际创建的 Mapper 文件应该添加到此处。格式如下：
+      <mapper resource="org/mybatis/example/BlogMapper.xml"/>
+     -->
+  </mappers>
+</configuration>
+```
 
 ## 第一个映射器（Mapper）
 
@@ -99,7 +131,7 @@ https://mybatis.org/mybatis-3/zh/getting-started.html#作用域（scope）和生
 
 ### 创建 ActorMapper 类（映射器）
 
-**切记：将Mapper文件添加到MyBatis核心配置文件中。**
+**切记：将 Mapper 文件添加到 MyBatis 核心配置文件中。**
 
 在 Mapper 添加基本的 CRUD 方法：
 
@@ -120,7 +152,29 @@ public void deleteActor(int actorId);
 
 ### 创建测试类
 
-TODO
+```java
+public class ActorMapperTest {
+
+    @Test
+    public void shouldListActors() {
+
+        // 1. 获取 SqlSession 类的实例
+        try (SqlSession sqlSession = new MyBatisUtil().getSqlSession()) {
+
+            // 2. 获取 ActorMapper 接口的实例（此接口的实现类由 MyBatis 框架根据配置文件自动生成） 
+            ActorMapper actorMapper = sqlSession.getMapper(com.xunmao.demo.dao.ActorMapper.class);
+
+            // 3. 消费 ActorMapper 接口的实例（相当于执行相关的 SQL 语句）
+            List<Actor> actors = actorMapper.listActors();
+            for (Actor actor : actors) {
+                System.out.println(actor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
 
 ## 扩展 ActorMapper 类（映射器）
 
@@ -160,7 +214,46 @@ public List<Actor> listActorsByLastNameLike(String value);
 
 ### 类型别名
 
-TODO
+类型别名可为 Java 类型设置一个缩写名字。它仅用于 XML 配置，意在降低冗余的全限定类名书写。  
+https://mybatis.org/mybatis-3/zh/configuration.html#类型别名（typealiases）
+
+首先，在核心配置文件中加入以下配置：  
+（此处使用包名，MyBatis 会在包名下面搜索需要的 Java Bean）
+
+```xml
+<typeAliases>
+  <package name="com.xunmao.demo.pojo" />
+</typeAliases>
+```
+
+然后，在各个映射器文件中，就可以直接使用类名了（不区分大小写）
+
+```xml
+<select id="listActors" resultType="Actor">
+  SELECT
+      actor_id,
+      first_name,
+      last_name,
+      last_update
+  FROM
+      actor
+</select>
+```
+
+### 注册映射器
+
+随着映射器数量增加，可以让 MyBatis 自动注册映射器。
+
+在核心配置文件中加入以下配置即可（替换之前的映射器配置）：
+
+```xml
+<!-- 将包内的映射器接口实现全部注册为映射器 -->
+<mappers>
+  <package name="com.xunmao.demo.dao"/>
+</mappers>
+```
+
+即使将来创建了新的映射器（包名与上述包名一致），也不需要手动注册（更新核心配置文件）。
 
 ## 高级映射
 
