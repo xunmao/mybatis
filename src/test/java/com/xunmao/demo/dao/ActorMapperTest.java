@@ -95,7 +95,7 @@ public class ActorMapperTest {
         try (SqlSession sqlSession = new MyBatisUtil().getSqlSession()) {
             ActorMapper actorMapper = sqlSession.getMapper(com.xunmao.demo.dao.ActorMapper.class);
 
-            Date lastUpdate = new Date(System.currentTimeMillis());
+            Date lastUpdate = new Date();
             Actor actor = new Actor(9999, "firstName", "lastName", lastUpdate);
             actorMapper.addActor(actor);
 
@@ -111,7 +111,7 @@ public class ActorMapperTest {
         try (SqlSession sqlSession = new MyBatisUtil().getSqlSession()) {
             ActorMapper actorMapper = sqlSession.getMapper(com.xunmao.demo.dao.ActorMapper.class);
 
-            Date lastUpdate = new Date(System.currentTimeMillis());
+            Date lastUpdate = new Date();
             Actor actor = new Actor(9999, "newFirstName", "newLastName", lastUpdate);
             actorMapper.updateActor(actor);
 
